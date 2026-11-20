@@ -2,6 +2,12 @@ import { fireEvent, render, screen, within } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import Main, { initializeTimes, updateTimes } from './Main';
 
+beforeEach(() => {
+  jest.useFakeTimers('modern');
+  jest.setSystemTime(new Date(2026, 10, 20, 12));
+});
+afterEach(() => jest.useRealTimers());
+
 test('initializeTimes returns non-empty API availability for today', () => {
   jest.useFakeTimers('modern');
   const today = new Date(2026, 10, 20, 12);

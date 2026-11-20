@@ -5,7 +5,7 @@ export default function Hero() {
     <section className="hero" id="about" aria-labelledby="hero-heading">
       <div className="container hero-grid">
         <div className="hero-copy">
-          <h1 id="hero-heading">Little Lemon</h1>
+          <h1 id="hero-heading" tabIndex="-1">Little Lemon</h1>
           <h2>Chicago</h2>
           <p>We are a family owned Mediterranean restaurant, focused on traditional recipes served with a modern twist.</p>
           <Link className="button" to="/booking">Reserve a Table</Link>

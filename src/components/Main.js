@@ -1,10 +1,11 @@
 /* global fetchAPI, submitAPI */
-import { useReducer, useState } from 'react';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { useEffect, useReducer, useRef, useState } from 'react';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import ConfirmedBooking from './ConfirmedBooking';
 import Hero from './Hero';
 import Specials from './Specials';
 import BookingPage from './BookingPage';
+import { validateBooking } from '../utils/bookingValidation';
 
 function fetchTimes(date) {
   // If the external library fails to load, do not offer unverified slots.
@@ -43,6 +44,16 @@ export default function Main() {
   const [bookings, setBookings] = useState({});
   const [confirmedBooking, setConfirmedBooking] = useState(null);
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const main = useRef(null);
+  const previousPath = useRef(pathname);
+
+  useEffect(() => {
+    if (previousPath.current !== pathname) {
+      main.current?.querySelector('h1')?.focus();
+      previousPath.current = pathname;
+    }
+  }, [pathname]);
 
   function dispatchDateChange(action) {
     setSelectedDate(action.date);
@@ -50,7 +61,7 @@ export default function Main() {
   }
 
   function submitForm(booking) {
-    if (!booking.date || booking.date !== selectedDate || !availableTimes.includes(booking.time)) return false;
+    if (booking.date !== selectedDate || Object.keys(validateBooking(booking, availableTimes)).length) return false;
     try {
       if (typeof submitAPI !== 'function' || submitAPI(booking) !== true) return false;
     } catch {
@@ -67,7 +78,7 @@ export default function Main() {
   }
 
   return (
-    <main id="main-content">
+    <main id="main-content" tabIndex="-1" ref={main}>
       <Routes>
         <Route path="/" element={<><Hero /><Specials /></>} />
         <Route path="/booking" element={
